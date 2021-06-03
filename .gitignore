@@ -131,3 +131,4 @@ temp/
 /uploads
 .DS_Store
 /assets
+/build
