@@ -4,22 +4,36 @@ import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
+
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password2, location } = req.body;
+
   const pageTitle = "Join";
+
   if (password !== password2) {
     return res.status(400).render("join", {
       pageTitle,
-      errorMessage: "Password confirmation does not match.",
+      passwordErrorMessage: "Password confirmation does not match.",
+      name,
+      username,
+      email,
+      location,
     });
   }
+
   const exists = await User.exists({ $or: [{ username }, { email }] });
+
   if (exists) {
     return res.status(400).render("join", {
       pageTitle,
-      errorMessage: "This username/email is already taken.",
+      duplicateErrorMessage: "This username/email is already taken.",
+      name,
+      password,
+      password2,
+      location,
     });
   }
+
   try {
     await User.create({
       name,
@@ -36,8 +50,8 @@ export const postJoin = async (req, res) => {
     });
   }
 };
-export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "Login" });
+
+export const getLogin = (req, res) => res.render("login", { pageTitle: "Login" });
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -139,9 +153,11 @@ export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
+
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
+
 export const postEdit = async (req, res) => {
   const {
     session: {
@@ -173,6 +189,7 @@ export const getChangePassword = (req, res) => {
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
 };
+
 export const postChangePassword = async (req, res) => {
   const {
     session: {
