@@ -1,6 +1,6 @@
 # Youtube Clone
 
-> [Heroku Link](http://indante.herokuapp.com/)
+> [Go to live service](http://indante.herokuapp.com/)
 
 ### Users
 
